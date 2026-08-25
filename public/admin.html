@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت | MAHA Fastfood</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="apple-touch-icon" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="admin-container">
+    <div id="loginBox" class="login-box">
+      <div class="login-logo">MAHA</div>
+      <h1>پنل مدیریت</h1>
+      <p>برای ورود، نام کاربری و رمز را وارد کنید. نام کاربری معمولاً admin است.</p>
+      <form id="loginForm">
+        <input id="username" value="admin" placeholder="نام کاربری" autocomplete="username">
+        <input id="password" type="password" placeholder="رمز ورود" autocomplete="current-password">
+        <button type="submit">ورود به پنل</button>
+      </form>
+      <div class="login-footer">MAHA FASTFOOD</div>
+    </div>
+
+    <div id="adminPanel" style="display:none">
+      <button type="button" id="logoutBtn" class="logout-btn">خروج</button>
+      <h1 class="admin-title">پنل مدیریت MAHA</h1>
+      <p class="admin-lead">از اینجا بدون تغییر کد، غذاها و متن‌های سایت را عوض کنید. بعد از ذخیره، صفحه اصلی را رفرش کنید تا تغییرات دیده شود.</p>
+
+      <div class="admin-tabs">
+        <button type="button" class="admin-tab active" data-tab="foods">غذاها</button>
+        <button type="button" class="admin-tab" data-tab="categories">دسته‌بندی‌ها</button>
+        <button type="button" class="admin-tab" data-tab="settings">اطلاعات و متن سایت</button>
+      </div>
+
+      <p id="adminMessage" class="admin-message" hidden></p>
+
+      <section id="tab-foods" class="admin-section active">
+        <form id="foodForm" class="admin-form" onsubmit="return false;">
+          <h2>افزودن / ویرایش غذا</h2>
+          <p class="admin-hint">نام، دسته، قیمت و عکس را پر کنید و «افزودن غذا» را بزنید. برای ویرایش، از لیست پایین روی «ویرایش» بزنید. اگر تیک «نمایش در سایت» برداشته شود، آن غذا در منو دیده نمی‌شود.</p>
+
+          <label class="field">
+            <span>نام غذا</span>
+            <small>مثلا پیتزا پپرونی</small>
+            <input id="name" placeholder="نام غذا">
+          </label>
+
+          <label class="field">
+            <span>دسته‌بندی</span>
+            <small>اگر دسته پیتزا چندسایز باشد، چند قیمت می‌پرسد؛ وگرنه یک قیمت کافی است.</small>
+            <select id="category"></select>
+          </label>
+
+          <div id="pizzaSizes">
+            <h3>قیمت سایزها</h3>
+            <p class="admin-hint">برای پیتزا قیمت هر سایز را جدا بنویسید. عدد را بدون تومان وارد کنید؛ مثلا 500000</p>
+            <div id="sizeList"></div>
+            <button type="button" id="addSizeBtn" class="ghost-btn">افزودن سایز</button>
+          </div>
+
+          <label class="field" id="priceField">
+            <span>قیمت</span>
+            <small>فقط عدد؛ مثلا 180000</small>
+            <input id="price" placeholder="قیمت">
+          </label>
+
+          <label class="field">
+            <span>توضیحات غذا</span>
+            <small>در صفحه جزئیات غذا نمایش داده می‌شود.</small>
+            <textarea id="description" placeholder="توضیحات غذا"></textarea>
+          </label>
+
+          <label class="check-line">
+            <input id="isActive" type="checkbox" checked>
+            نمایش در سایت
+          </label>
+          <p class="admin-hint">اگر این گزینه خاموش باشد، مشتری غذا را در منو نمی‌بیند.</p>
+
+          <label class="field">
+            <span>تصویر غذا</span>
+            <small>یک عکس از گوشی یا کامپیوتر انتخاب کنید. بهتر است عکس مربع یا افقی باشد.</small>
+            <input id="image" type="file" accept="image/*">
+          </label>
+          <img id="imagePreview" class="image-preview" alt="" hidden>
+          <button type="button" id="addFoodBtn">افزودن غذا</button>
+          <button type="button" id="saveEditBtn" style="display:none">ذخیره تغییرات</button>
+          <button type="button" id="cancelEditBtn" class="ghost-btn" style="display:none">انصراف</button>
+        </form>
+
+        <h2>غذاهای موجود</h2>
+        <p class="admin-hint">با دکمه‌های بالا و پایین ترتیب نمایش در منو عوض می‌شود.</p>
+        <div id="foodList"></div>
+      </section>
+
+      <section id="tab-categories" class="admin-section">
+        <form id="categoryForm" class="admin-form">
+          <h2>مدیریت دسته‌بندی</h2>
+          <p class="admin-hint">دسته‌ها همان دکمه‌های بالای منو هستند؛ مثل پیتزا، برگر و ساندویچ. اول دسته را بسازید، بعد غذا را داخل آن بگذارید.</p>
+          <input type="hidden" id="categoryId">
+
+          <label class="field">
+            <span>نام دسته</span>
+            <small>مثلا پیتزا</small>
+            <input id="categoryName" placeholder="نام دسته" required>
+          </label>
+
+          <label class="field">
+            <span>آیکون</span>
+            <small>اختیاری است. می‌توانید ایموجی بگذارید؛ مثلا 🍕</small>
+            <input id="categoryIcon" placeholder="🍕">
+          </label>
+
+          <label class="check-line">
+            <input id="categoryHasSizes" type="checkbox">
+            این دسته چند سایز و چند قیمت دارد
+          </label>
+          <p class="admin-hint">برای پیتزا این گزینه را روشن کنید تا قیمت مینی، یک‌نفره و خانواده جدا ثبت شود.</p>
+
+          <label class="check-line">
+            <input id="categoryActive" type="checkbox" checked>
+            نمایش در سایت
+          </label>
+          <button type="submit" id="categorySubmit">افزودن دسته‌بندی</button>
+        </form>
+        <div id="categoryList"></div>
+      </section>
+
+      <section id="tab-settings" class="admin-section">
+        <form id="settingsForm" class="admin-form restaurant-settings">
+          <h2>اطلاعات رستوران</h2>
+          <p class="admin-hint">این موارد در صفحه تماس و پایین سایت دیده می‌شوند.</p>
+
+          <label class="field">
+            <span>شماره تماس</span>
+            <small>در کارت تماس و فوتر نمایش داده می‌شود.</small>
+            <input data-settings-input="phone" placeholder="مثلا ۹۳۱۱۲۲۸۲ - ۰۲۱">
+          </label>
+          <label class="field">
+            <span>آدرس رستوران</span>
+            <small>روی نقشه صفحه تماس هم استفاده می‌شود.</small>
+            <input data-settings-input="address" placeholder="آدرس رستوران">
+          </label>
+          <label class="field">
+            <span>ساعت کاری خلاصه</span>
+            <small>متن کوتاه؛ مثلا ۱۱:۰۰ - ۲۲:۰۰</small>
+            <input data-settings-input="hours" placeholder="۱۱:۰۰ - ۲۲:۰۰">
+          </label>
+
+          <h3>ساعت کاری هفته</h3>
+          <p class="admin-hint">این ساعت‌ها در صفحه اصلی و صفحه تماس، روزبه‌روز نشان داده می‌شوند.</p>
+          <label class="field"><span>شنبه</span><input data-settings-input="hours_saturday" placeholder="شنبه"></label>
+          <label class="field"><span>یکشنبه</span><input data-settings-input="hours_sunday" placeholder="یکشنبه"></label>
+          <label class="field"><span>دوشنبه</span><input data-settings-input="hours_monday" placeholder="دوشنبه"></label>
+          <label class="field"><span>سه‌شنبه</span><input data-settings-input="hours_tuesday" placeholder="سه‌شنبه"></label>
+          <label class="field"><span>چهارشنبه</span><input data-settings-input="hours_wednesday" placeholder="چهارشنبه"></label>
+          <label class="field"><span>پنجشنبه</span><input data-settings-input="hours_thursday" placeholder="پنجشنبه"></label>
+          <label class="field"><span>جمعه</span><input data-settings-input="hours_friday" placeholder="جمعه"></label>
+
+          <h3>متن‌های صفحه اصلی</h3>
+          <p class="admin-hint">با تغییر این بخش، نوشته‌های صفحه خانه عوض می‌شود. لوگو همیشه MAHA طلایی می‌ماند.</p>
+
+          <label class="field">
+            <span>متن طلایی بالای عنوان</span>
+            <small>مثلا MAHA FASTFOOD</small>
+            <input data-settings-input="hero_tagline" placeholder="متن طلایی صفحه اول">
+          </label>
+          <label class="field">
+            <span>خط اول عنوان بزرگ</span>
+            <small>الان: طعم واقعی،</small>
+            <input data-settings-input="hero_title_1" placeholder="خط اول عنوان">
+          </label>
+          <label class="field">
+            <span>خط دوم عنوان بزرگ</span>
+            <small>الان: انتخاب خاص</small>
+            <input data-settings-input="hero_title_2" placeholder="خط دوم عنوان">
+          </label>
+          <label class="field">
+            <span>توضیح زیر عنوان</span>
+            <textarea data-settings-input="hero_subtitle" placeholder="توضیح صفحه اول"></textarea>
+          </label>
+          <label class="field">
+            <span>عنوان درباره ما</span>
+            <input data-settings-input="about_title" placeholder="درباره ما">
+          </label>
+          <label class="field">
+            <span>متن درباره ما</span>
+            <textarea data-settings-input="about_text" placeholder="متن درباره ما"></textarea>
+          </label>
+          <label class="field">
+            <span>عنوان کارت ۱</span>
+            <small>سه کارت وسط صفحه اصلی</small>
+            <input data-settings-input="feature_1_title" placeholder="مواد تازه">
+          </label>
+          <label class="field">
+            <span>توضیح کارت ۱</span>
+            <input data-settings-input="feature_1_text" placeholder="توضیح ویژگی ۱">
+          </label>
+          <label class="field">
+            <span>عنوان کارت ۲</span>
+            <input data-settings-input="feature_2_title" placeholder="کیفیت بالا">
+          </label>
+          <label class="field">
+            <span>توضیح کارت ۲</span>
+            <input data-settings-input="feature_2_text" placeholder="توضیح ویژگی ۲">
+          </label>
+          <label class="field">
+            <span>عنوان کارت ۳</span>
+            <input data-settings-input="feature_3_title" placeholder="سفارش سریع">
+          </label>
+          <label class="field">
+            <span>توضیح کارت ۳</span>
+            <input data-settings-input="feature_3_text" placeholder="توضیح ویژگی ۳">
+          </label>
+          <label class="field">
+            <span>عنوان پیشنهادهای ویژه</span>
+            <input data-settings-input="home_specials_title" placeholder="پیشنهادهای ویژه">
+          </label>
+          <label class="field">
+            <span>توضیح پیشنهادهای ویژه</span>
+            <input data-settings-input="home_specials_subtitle" placeholder="توضیح پیشنهادهای ویژه">
+          </label>
+
+          <h3>سایر متن‌ها</h3>
+          <label class="field">
+            <span>نام برند در فوتر</span>
+            <input data-settings-input="site_name" placeholder="MAHA">
+          </label>
+          <label class="field">
+            <span>شعار فوتر</span>
+            <small>زیر نام برند؛ مثلا BURGER & PIZZA</small>
+            <input data-settings-input="footer_tagline" placeholder="BURGER & PIZZA">
+          </label>
+          <label class="field">
+            <span>عنوان صفحه منو</span>
+            <input data-settings-input="menu_title" placeholder="منوی ماها">
+          </label>
+          <label class="field">
+            <span>توضیح صفحه منو</span>
+            <input data-settings-input="menu_subtitle" placeholder="توضیح منو">
+          </label>
+          <label class="field">
+            <span>لینک اینستاگرام</span>
+            <small>اگر خالی باشد، فقط متن «ما را دنبال کنید» دیده می‌شود.</small>
+            <input data-settings-input="instagram_url" placeholder="https://instagram.com/...">
+          </label>
+
+          <button type="submit">ذخیره اطلاعات و متن‌ها</button>
+        </form>
+
+        <form id="passwordForm" class="admin-form restaurant-settings">
+          <h2>تغییر رمز عبور</h2>
+          <p class="admin-hint">رمز جدید باید حداقل ۶ حرف باشد. بعد از تغییر، با رمز جدید وارد شوید.</p>
+          <label class="field">
+            <span>رمز فعلی</span>
+            <input id="currentPassword" type="password" placeholder="رمز فعلی" required>
+          </label>
+          <label class="field">
+            <span>رمز جدید</span>
+            <input id="newPassword" type="password" placeholder="رمز جدید" required>
+          </label>
+          <button type="submit">ذخیره رمز جدید</button>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script defer src="js/api.js"></script>
+  <script defer src="js/common.js"></script>
+  <script defer src="js/admin.js"></script>
+</body>
+</html>

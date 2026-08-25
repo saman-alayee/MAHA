@@ -1,0 +1,22 @@
+node_modules/
+.env
+public/.env
+data/*.db
+data/*.db-wal
+data/*.db-shm
+public/data/*.db
+public/data/*.db-wal
+public/data/*.db-shm
+uploads/foods/*
+!uploads/foods/.gitkeep
+public/uploads/foods/*
+!public/uploads/foods/.gitkeep
+.DS_Store
+Thumbs.db
+*.log
+cookies.txt
+
+# leftover from the old layout; the live app is inside public/
+/images/
+/uploads/
+/data/
