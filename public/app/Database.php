@@ -160,5 +160,4 @@ function migrate(Database $db, $driver)
               setting_value TEXT NOT NULL DEFAULT ''
             );
         ");
-    }
 }
